@@ -28,7 +28,7 @@ pub fn translate_to_fuzz_mvp(seed: &[u8]) -> Module {
 }
 
 /// Mutate a Module based on some random array of bytes.
-pub fn mutate_to_fuzz(module: Module, seed: &[u8]) {
+pub fn mutate_to_fuzz(module: &mut Module, seed: &[u8]) {
     if seed.len() == 0 {
         return;
     }
@@ -40,8 +40,10 @@ pub fn mutate_to_fuzz(module: Module, seed: &[u8]) {
 
 #[cfg(test)]
 mod tests {
+    use crate::Module;
     use super::translate_to_fuzz;
     use super::translate_to_fuzz_mvp;
+    use super::mutate_to_fuzz;
     use rand::{self, RngCore};
 
     #[test]
@@ -66,5 +68,17 @@ mod tests {
 
             assert!(module.is_valid());
         }
+    }
+
+    #[test]
+    fn test_mutate_to_fuzz() {
+        let mut module = Module::new();
+
+        let mut seed = vec![0; 1000];
+        let mut rng = rand::thread_rng();
+        rng.fill_bytes(&mut seed);
+        mutate_to_fuzz(&mut module, &seed);
+
+        assert!(module.is_valid());
     }
 }
