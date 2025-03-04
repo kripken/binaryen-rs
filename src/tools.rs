@@ -34,7 +34,7 @@ pub fn mutate_to_fuzz(module: Module, seed: &[u8]) {
     }
 
     unsafe {
-        binaryen_sys::mutateToFuzz(module.inner.as_ptr(), seed.as_ptr() as *const c_char, seed.len());
+        binaryen_sys::mutateToFuzz(module.inner.raw, seed.as_ptr() as *const c_char, seed.len());
     }
 }
 
