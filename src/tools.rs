@@ -27,6 +27,17 @@ pub fn translate_to_fuzz_mvp(seed: &[u8]) -> Module {
     }
 }
 
+/// Mutate a Module based on some random array of bytes.
+pub fn mutate_to_fuzz(module: Module, seed: &[u8]) {
+    if seed.len() == 0 {
+        return;
+    }
+
+    unsafe {
+        binaryen_sys::mutateToFuzz(module.inner.as_ptr(), seed.as_ptr() as *const c_char, seed.len());
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::translate_to_fuzz;
