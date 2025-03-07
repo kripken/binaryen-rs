@@ -58,6 +58,7 @@ extern "C" void mutateToFuzz(BinaryenModuleRef module, const char *data, size_t 
     module->features.setAll();
     module->features.setSharedEverything(false);
     module->features.setFP16(false);
+    module->features.setCustomDescriptors(false);
 
     reader.build();
 }
