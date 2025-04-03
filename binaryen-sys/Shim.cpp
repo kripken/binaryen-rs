@@ -46,6 +46,23 @@ extern "C" BinaryenModuleRef translateToFuzz(const char *data, size_t len, bool 
     return module;
 }
 
+extern "C" void mutateToFuzz(BinaryenModuleRef module, const char *data, size_t len) {
+    Module* wasm = (Module*)module;
+
+    vector<char> input(data, data + len);
+
+    TranslateToFuzzReader reader(*module, std::move(input));
+    reader.setPreserveImportsAndExports(true);
+
+    // Enable all stable features.
+    module->features.setAll();
+    module->features.setSharedEverything(false);
+    module->features.setFP16(false);
+    module->features.setCustomDescriptors(false);
+
+    reader.build();
+}
+
 extern "C" void BinaryenShimDisposeBinaryenModuleAllocateAndWriteResult(
     BinaryenModuleAllocateAndWriteResult result
 ) {
